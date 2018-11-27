@@ -8,3 +8,6 @@ Style/HashSyntax:
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
+AllCops:
+  Exclude:
+    - spec/spec_helper.rb
