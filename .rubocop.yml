@@ -11,3 +11,15 @@ Layout/SpaceInsideHashLiteralBraces:
 AllCops:
   Exclude:
     - spec/spec_helper.rb
+
+Naming/MethodName:
+  Exclude:
+    - "lib/cli.rb"
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - "spec/cli_spec.rb"
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/cli_spec.rb"

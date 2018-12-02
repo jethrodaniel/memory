@@ -1,23 +1,65 @@
 require 'spec_helper'
 
+class String
+  def truncate(length)
+    size > length + 1 ? "#{self[0..length]}..." : self
+  end
+end
+
+COMMANDS = {
+  :A => {
+    :usage => 'A [MEM_SIZE] [PID]',
+    :desc => 'Allocate a chunk of memory to a process'
+  },
+  :D => {
+    :usage => 'D [PID]',
+    :desc => 'Deallocate memory from a process'
+  },
+  :M => {
+    :usage => 'M [MEM_SIZE] [FRAME_SIZE]',
+    :desc => 'Create a simulated physical memory space'
+  },
+  :P => {
+    :usage => 'P',
+    :desc => "Print the simulated physical memory's contents"
+  },
+  :R => {
+    :usage => 'R [PAGE] [OFFSET] [PID]',
+    :desc => "Read a byte from a process's memory location"
+  },
+  :W => {
+    :usage => 'W [PAGE] [OFFSET] [PID]',
+    :desc => "Write a `1` to a process's memory location"
+  },
+  :help => {
+    :usage => 'help [COMMAND]',
+    :desc => 'Describe available commands or one specific command'
+  },
+  :quit => {
+    :usage => 'quit',
+    :desc => 'Exit the program'
+  }
+}.freeze
+
+# Formats a command like thor
+def format_cmd(usage:, desc:)
+  largest_usage = COMMANDS.values.map { |info| info[:usage] }.map(&:size).max
+  "#{usage.ljust(largest_usage, ' ')}  # #{desc.truncate(45)}"
+end
+
 RSpec.describe 'CLI', :type => :aruba do
   before(:each) { run 'bin/memry', :exit_timeout => 1 }
 
   describe 'help' do
     let(:help) do
-      <<~OUTPUT.gsub(/Input:\n/, "Input: ")
-      Input: help
-      Commands:
-        A [MEM_SIZE] [PID]         # Allocates a chunk of memory for a process
-        D [PID]                    # Deallocates memory from a process
-        M [MEM_SIZE] [FRAME_SIZE]  # Creates a simulated physical memory space
-        P                          # Prints the simulated physical memory's contents
-        R [PAGE] [OFFSET] [PID]    # Reads a byte from a process's memory location
-        W [PAGE] [OFFSET] [PID]    # Writes `1` to a process's memory location
-        help [COMMAND]             # Describe available commands or one specific co...
-        quit                       # Exits the program
+      <<~OUTPUT.gsub(/Input:\n/, 'Input: ')
+        Input: help
+        Commands:
+          #{COMMANDS.values.map do |info|
+              format_cmd :usage => info[:usage], :desc => info[:desc]
+            end.join("\n  ")}
 
-      Input:
+        Input:
       OUTPUT
     end
 
@@ -29,21 +71,23 @@ RSpec.describe 'CLI', :type => :aruba do
       end
     end
 
-    context 'when called with `help`' do
-      let(:help_help) do
-        <<~OUTPUT.gsub(/Input:\n/, "Input: ")
-        Input: help help
-        Usage:
-          help [COMMAND]
+    COMMANDS.each_pair do |command, info|
+      context "when called with `#{command}`" do
+        let(:output) do
+          <<~OUTPUT.gsub(/Input:\n/, 'Input: ')
+            Input: help #{command}
+            Usage:
+              #{info[:usage]}
 
-        Describe available commands or one specific command
-        Input:
-        OUTPUT
-      end
+            #{info[:desc]}
+            Input:
+          OUTPUT
+        end
 
-      it 'shows help for `help`' do
-        type 'help help'
-        expect(last_command_started).to have_output help_help
+        it "shows help for `#{command}`" do
+          type "help #{command}"
+          expect(last_command_started).to have_output output
+        end
       end
     end
   end

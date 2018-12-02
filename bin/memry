@@ -6,7 +6,10 @@ require_relative '../lib/cli'
 require 'thor'
 
 %w[SIGINT INT].each do |signal|
-  trap(signal) { puts; exit }
+  trap signal do
+    puts
+    exit
+  end
 end
 
 loop do
