@@ -12,10 +12,16 @@ require 'thor'
   end
 end
 
+cli = CLI.new
+
 loop do
   input = Thor::Shell::Basic.new.ask 'Input:', :yellow
 
-  CLI.new.quit if input.nil?
+  cli.quit if input.nil?
 
-  CLI.start(input.split)
+  puts # newline
+
+  CLI.start(input.split, :shell => cli)
+
+  puts # newline
 end

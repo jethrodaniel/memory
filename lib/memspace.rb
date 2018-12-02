@@ -2,9 +2,12 @@
 
 # Simulates physical memory space
 class MemSpace
-  def initialize
-    @physical_memory = @Array.new mem_size, 0
+  def initialize(mem_size, _frame_size)
+    # Physical memory is represented as an array of bytes
+    @physical = @Array.new(mem_size, 0)
+
     @frames = nil
+
     @free_frames = @frames.dup
   end
 end

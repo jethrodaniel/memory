@@ -48,12 +48,20 @@ def format_cmd(usage:, desc:)
 end
 
 RSpec.describe 'CLI', :type => :aruba do
-  before(:each) { run 'bin/memry', :exit_timeout => 1 }
+  before(:each) { run 'bin/memry', :exit_timeout => 0.01 }
+
+  describe 'quit' do
+    it 'quits the program' do
+      type 'quit'
+      expect(last_command_started).to have_exit_status 0
+    end
+  end
 
   describe 'help' do
     let(:help) do
       <<~OUTPUT.gsub(/Input:\n/, 'Input: ')
         Input: help
+
         Commands:
           #{COMMANDS.values.map do |info|
               format_cmd :usage => info[:usage], :desc => info[:desc]
@@ -76,6 +84,7 @@ RSpec.describe 'CLI', :type => :aruba do
         let(:output) do
           <<~OUTPUT.gsub(/Input:\n/, 'Input: ')
             Input: help #{command}
+
             Usage:
               #{info[:usage]}
 

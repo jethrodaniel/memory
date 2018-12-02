@@ -11,7 +11,9 @@ class CLI < Thor
   end
 
   desc 'M [MEM_SIZE] [FRAME_SIZE]', 'Create a simulated physical memory space'
-  def M(mem_size, _frame_size)
+  def M(mem_size, frame_size)
+    # @memory = MemSpace.new
+    puts frame_size
     puts "#{mem_size} Bytes physical memory (5 frames) has been created."
   end
 
@@ -27,7 +29,7 @@ class CLI < Thor
 
   desc 'D [PID]', 'Deallocate memory from a process'
   def D(pid)
-    puts "#{mem_size} bytes of memory have been dellocated from process #{pid}."
+    puts "pass bytes of memory have been dellocated from process #{pid}."
   end
 
   desc 'W [PAGE] [OFFSET] [PID]', "Write a `1` to a process's memory location"
@@ -45,4 +47,8 @@ class CLI < Thor
     Thor::Shell::Basic.new.say "\nExiting...", :cyan
     exit
   end
+
+  # Aliases
+  %w[e ex exi exit q qu qui].each { |c| map c => :quit }
+  %w[h he hel].each { |c| map c => :help }
 end
