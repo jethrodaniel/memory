@@ -47,6 +47,13 @@ def format_cmd(usage:, desc:)
   "#{usage.ljust(largest_usage, ' ')}  # #{desc.truncate(45)}"
 end
 
+# Formats all commands like thor's `help`
+def format_all_cmds
+  COMMANDS.values.map do |info|
+    format_cmd :usage => info[:usage], :desc => info[:desc]
+  end.join "\n  "
+end
+
 RSpec.describe 'CLI', :type => :aruba do
   before(:each) { run 'bin/memry', :exit_timeout => 0.01 }
 
@@ -58,43 +65,24 @@ RSpec.describe 'CLI', :type => :aruba do
   end
 
   describe 'help' do
-    let(:help) do
-      <<~OUTPUT.gsub(/Input:\n/, 'Input: ')
-        Input: help
-
-        Commands:
-          #{COMMANDS.values.map do |info|
-              format_cmd :usage => info[:usage], :desc => info[:desc]
-            end.join("\n  ")}
-
-        Input:
-      OUTPUT
-    end
+    let(:help) { "Input: help\n\nCommands:\n  #{format_all_cmds}\n\nInput: " }
 
     context 'when called with no args' do
       it 'shows general usage' do
         type 'help'
-
         expect(last_command_started).to have_output help
       end
     end
 
-    COMMANDS.each_pair do |command, info|
-      context "when called with `#{command}`" do
+    COMMANDS.each_pair do |cmd, info|
+      context "when called with `#{cmd}`" do
         let(:output) do
-          <<~OUTPUT.gsub(/Input:\n/, 'Input: ')
-            Input: help #{command}
-
-            Usage:
-              #{info[:usage]}
-
-            #{info[:desc]}
-            Input:
-          OUTPUT
+          "Input: help #{cmd}" +
+          "\n\nUsage:\n  #{info[:usage]}\n\n#{info[:desc]}\nInput: "
         end
 
-        it "shows help for `#{command}`" do
-          type "help #{command}"
+        it "shows help for `#{cmd}`" do
+          type "help #{cmd}"
           expect(last_command_started).to have_output output
         end
       end
