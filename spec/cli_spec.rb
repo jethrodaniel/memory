@@ -55,7 +55,7 @@ def format_all_cmds
 end
 
 RSpec.describe 'CLI', :type => :aruba do
-  before(:each) { run 'bin/memry', :exit_timeout => 0.01 }
+  before(:each) { run 'bin/prog4', :exit_timeout => 0.01 }
 
   describe 'quit' do
     it 'quits the program' do
@@ -77,8 +77,8 @@ RSpec.describe 'CLI', :type => :aruba do
     COMMANDS.each_pair do |cmd, info|
       context "when called with `#{cmd}`" do
         let(:output) do
-          "Input: help #{cmd}" +
-          "\n\nUsage:\n  #{info[:usage]}\n\n#{info[:desc]}\nInput: "
+          "Input: help #{cmd}" \
+            "\n\nUsage:\n  #{info[:usage]}\n\n#{info[:desc]}\nInput: "
         end
 
         it "shows help for `#{cmd}`" do
@@ -87,5 +87,9 @@ RSpec.describe 'CLI', :type => :aruba do
         end
       end
     end
+  end
+
+  describe 'A' do
+    it { pending 'tada' }
   end
 end

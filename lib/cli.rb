@@ -12,7 +12,6 @@ class CLI < Thor
 
   desc 'M [MEM_SIZE] [FRAME_SIZE]', 'Create a simulated physical memory space'
   def M(mem_size, frame_size)
-    # @memory = MemSpace.new
     puts frame_size
     puts "#{mem_size} Bytes physical memory (5 frames) has been created."
   end

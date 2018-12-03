@@ -23,3 +23,8 @@ Style/FrozenStringLiteralComment:
 Metrics/BlockLength:
   Exclude:
     - "spec/cli_spec.rb"
+
+Style/Documentation:
+  Exclude:
+    - "lib/memory.rb"
+    - "spec/cli_spec.rb"
