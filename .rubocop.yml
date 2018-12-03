@@ -12,6 +12,9 @@ AllCops:
   Exclude:
     - spec/spec_helper.rb
 
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+
 Naming/MethodName:
   Exclude:
     - "lib/cli.rb"
@@ -27,4 +30,5 @@ Metrics/BlockLength:
 Style/Documentation:
   Exclude:
     - "lib/memory.rb"
+    - "lib/cli.rb"
     - "spec/cli_spec.rb"

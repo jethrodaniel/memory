@@ -2,8 +2,11 @@
 
 require 'thor'
 
-# The commands
+require_relative 'memory'
+
 class CLI < Thor
+  attr_reader :memory
+
   # Don't show app name in command help, i.e, instead of
   # `app command desc`, use `command desc`
   def self.banner(task, _namespace = false, subcommand = false)
@@ -12,17 +15,20 @@ class CLI < Thor
 
   desc 'M [MEM_SIZE] [FRAME_SIZE]', 'Create a simulated physical memory space'
   def M(mem_size, frame_size)
-    puts frame_size
-    puts "#{mem_size} Bytes physical memory (5 frames) has been created."
+    puts "#{mem_size} bytes physical memory " \
+      "(#{mem_size.to_i / frame_size.to_i} frames) has been created."
   end
 
-  desc 'P', "Print the simulated physical memory's contents"
+  desc 'P', "Print the memory's contents"
   def P
-    puts 'physical memory!'
+    @memory.frames.each.with_index(1) do |frame, num|
+      puts "f#{num}: #{frame.values.join}"
+    end
   end
 
-  desc 'A [MEM_SIZE] [PID]', 'Allocate a chunk of memory to a process'
-  def A(mem_size, pid)
+  desc 'A [ALLOC_SIZE] [PID]', 'Allocate a chunk of memory to a process'
+  def A(alloc_size, pid)
+
     puts "#{mem_size} bytes of memory have been allocated for process #{pid}."
   end
 
@@ -46,8 +52,4 @@ class CLI < Thor
     Thor::Shell::Basic.new.say "\nExiting...", :cyan
     exit
   end
-
-  # Aliases
-  %w[e ex exi exit q qu qui].each { |c| map c => :quit }
-  %w[h he hel].each { |c| map c => :help }
 end

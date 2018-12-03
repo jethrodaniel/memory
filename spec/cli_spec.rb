@@ -8,7 +8,7 @@ end
 
 COMMANDS = {
   :A => {
-    :usage => 'A [MEM_SIZE] [PID]',
+    :usage => 'A [ALLOC_SIZE] [PID]',
     :desc => 'Allocate a chunk of memory to a process'
   },
   :D => {
@@ -21,7 +21,7 @@ COMMANDS = {
   },
   :P => {
     :usage => 'P',
-    :desc => "Print the simulated physical memory's contents"
+    :desc => "Print the memory's contents"
   },
   :R => {
     :usage => 'R [PAGE] [OFFSET] [PID]',
@@ -90,6 +90,15 @@ RSpec.describe 'CLI', :type => :aruba do
   end
 
   describe 'A' do
-    it { pending 'tada' }
+    let(:output) do
+      "Input: M 10 2\nInput: \n10 bytes physical memory " \
+        "(5 frames) has been created.\n"
+    end
+
+    it 'allocates memory' do
+      type 'M 10 2'
+
+      expect(last_command_stopped).to have_output output
+    end
   end
 end

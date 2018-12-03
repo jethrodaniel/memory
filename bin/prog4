@@ -15,13 +15,24 @@ end
 cli = CLI.new
 
 loop do
-  input = Thor::Shell::Basic.new.ask 'Input:', :yellow
+  input = (Thor::Shell::Basic.new.ask 'Input:', :yellow).split
 
   cli.quit if input.nil?
 
   puts # newline
 
-  CLI.start(input.split, :shell => cli)
+  cmd = input.shift
+
+  if cmd.nil?
+    Thor.commands['help'].run(cli, input)
+    next
+  end
+
+  if cmd.match? /\Ahelp*/ # Handle `help` separately
+    Thor.commands['help'].run(cli, input)
+  else
+    CLI.commands[cmd].run(cli, input)
+  end
 
   puts # newline
 end
