@@ -4,8 +4,6 @@ require 'spec_helper'
 
 require_relative '../lib/os'
 
-require 'set'
-
 RSpec.describe 'OS' do
   subject(:os) { OS.new :mem_size => 32, :frame_size => 4 }
 
@@ -22,7 +20,7 @@ RSpec.describe 'OS' do
 
       expect(os.process_control_blocks.first.pid).to eq(9001)
       expect(os.process_control_blocks.first.page_table).to eq(frames)
-      expect(os.memory.free_frames).to eq((4...8).to_set)
+      expect(os.memory.free_frames).to eq((4...8).to_a)
     end
 
     it 'raises an error in case of insufficent memory' do

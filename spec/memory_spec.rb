@@ -2,8 +2,6 @@
 
 require 'spec_helper'
 
-require 'set'
-
 require_relative '../lib/memory'
 
 RSpec.describe 'Memory' do
@@ -23,7 +21,7 @@ RSpec.describe 'Memory' do
 
   describe '.free_frames' do
     it 'returns a list of free frames' do
-      expect(memory.free_frames).to eq((0...8).to_set)
+      expect(memory.free_frames).to eq((0...8).to_a)
     end
   end
 
@@ -38,8 +36,8 @@ RSpec.describe 'Memory' do
     it 'gives up the specified memory' do
       allocated = memory.allocate! :amount => 16
 
-      expect(allocated).to eq((0...4).to_set)
-      expect(memory.free_frames).to eq((4...8).to_set)
+      expect(allocated).to eq((0...4).to_a)
+      expect(memory.free_frames).to eq((4...8).to_a)
     end
 
     it 'raises an error in case of insufficent memory' do
