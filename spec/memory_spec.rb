@@ -27,7 +27,7 @@ RSpec.describe 'Memory' do
 
   describe '.get' do
     it 'retrives an element from physical memory' do
-      element = memory.get(:frame => 4, :offset => 3)
+      element = memory.get :frame => 4, :offset => 3
       expect(element).to eq(0)
     end
   end

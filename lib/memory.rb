@@ -26,12 +26,30 @@ class Memory
     @data[frame * @frame_size + offset]
   end
 
+  # Give up frames to allocate the requested amount of memory
+  #
+  # @return  The frames that can be used to grant the request
   def allocate!(amount:)
-    pages_needed = (amount / @frame_size) +
-                   ((amount % @frame_size).zero? ? 0 : 1)
+    frames_needed = (amount / @frame_size) +
+                    ((amount % @frame_size).zero? ? 0 : 1)
 
-    raise InsufficientMemoryError if pages_needed > free_frames.size
+    raise InsufficientMemoryError if frames_needed > free_frames.size
 
-    @free_frames.shift pages_needed
+    @free_frames.shift frames_needed
+  end
+
+  # Frees the given frames
+  def free!(frames:)
+    @free_frames.push *frames
+  end
+
+  def to_s
+    @free_frames.map.with_index do |frame, index|
+      frame_contents = (0...@frame_size).map do |offset|
+        get :frame => index, :offset => offset
+      end
+
+      "f#{index + 1}: #{frame_contents.join}"
+    end.join "\n"
   end
 end

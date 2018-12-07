@@ -89,15 +89,41 @@ RSpec.describe 'CLI', :type => :aruba do
     end
   end
 
-  describe 'A' do
+  describe 'M' do
     let(:output) do
-      "Input: M 10 2\nInput: \n10 bytes physical memory " \
-        "(5 frames) has been created.\n"
+      "Input: M 32 4\nInput: \n32 bytes physical memory " \
+      "(8 frames) has been created.\n"
     end
 
     it 'allocates memory' do
-      type 'M 10 2'
+      type 'M 32 4'
+      expect(last_command_stopped).to have_output output
+    end
+  end
 
+  describe 'P' do
+    let(:output) do
+      <<~OUTPUT.gsub "Input:\n", "Input: \n"
+      Input: M 32 4
+      Input: P
+      Input:
+      32 bytes physical memory (8 frames) has been created.
+
+
+      f1: 0000
+      f2: 0000
+      f3: 0000
+      f4: 0000
+      f5: 0000
+      f6: 0000
+      f7: 0000
+      f8: 0000
+      OUTPUT
+    end
+
+    it 'prints physical memory' do
+      type 'M 32 4'
+      type 'P'
       expect(last_command_stopped).to have_output output
     end
   end

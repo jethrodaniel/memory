@@ -30,6 +30,6 @@ class OS
 
     @process_control_blocks.delete pcb
 
-    @memory.free_frames.push *pcb.page_table
+    @memory.free! :frames => pcb.page_table
   end
 end

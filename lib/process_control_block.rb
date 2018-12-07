@@ -8,4 +8,12 @@ class ProcessControlBlock
     @pid = pid
     @page_table = []
   end
+
+  # Read a byte from memory
+  def read(page:, offset:)
+  end
+
+  # Write a `1` to memory
+  def write!(page:, offset:)
+  end
 end

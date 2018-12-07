@@ -5,6 +5,7 @@ require_relative '../lib/cli'
 
 require 'thor'
 
+# Exit cleanly
 %w[SIGINT INT].each do |signal|
   trap signal do
     puts
@@ -24,14 +25,14 @@ loop do
   cmd = input.shift
 
   if cmd.nil?
-    Thor.commands['help'].run(cli, input)
+    Thor.commands['help'].run cli, input
     next
   end
 
   if cmd.match? /\Ahelp*/ # Handle `help` separately
-    Thor.commands['help'].run(cli, input)
+    Thor.commands['help'].run cli, input
   else
-    CLI.commands[cmd].run(cli, input)
+    CLI.commands[cmd].run cli, input
   end
 
   puts # newline
