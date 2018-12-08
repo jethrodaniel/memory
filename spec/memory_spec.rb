@@ -46,4 +46,23 @@ RSpec.describe 'Memory' do
       end.to raise_error(InsufficientMemoryError)
     end
   end
+
+  describe '.to_s' do
+    let(:output) do
+      <<~OUTPUT.gsub /(.*)\n\z/, '\1'
+      f1: 0000
+      f2: 0000
+      f3: 0000
+      f4: 0000
+      f5: 0000
+      f6: 0000
+      f7: 0000
+      f8: 0000
+      OUTPUT
+    end
+
+    it 'prints the contents of physical memory' do
+      expect(memory.to_s).to eq(output)
+    end
+  end
 end

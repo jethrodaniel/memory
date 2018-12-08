@@ -44,12 +44,8 @@ class Memory
   end
 
   def to_s
-    @free_frames.map.with_index do |frame, index|
-      frame_contents = (0...@frame_size).map do |offset|
-        get :frame => index, :offset => offset
-      end
-
-      "f#{index + 1}: #{frame_contents.join}"
+    @data.values.each_slice(@frame_size).map.with_index do |frame, index|
+      "f#{index + 1}: #{frame.join}"
     end.join "\n"
   end
 end
