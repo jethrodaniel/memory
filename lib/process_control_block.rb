@@ -6,7 +6,7 @@ class ProcessControlBlock
 
   def initialize(pid:)
     @pid = pid
-    @page_table = []
+    @page_table = {}
   end
 
   # Read a byte from memory

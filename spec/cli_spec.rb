@@ -105,18 +105,23 @@ RSpec.describe 'CLI', :type => :aruba do
     let(:output) do
       <<~OUTPUT.gsub "Input:\n", "Input: \n"
       Input: M 4 2
+      Input: A 2 9001
       Input: P
       Input:
       4 bytes physical memory (2 frames) has been created.
 
 
-      f1: 00
+      2 bytes of memory have been allocated for process 9001.
+
+
+      f1->p0 (proc9001): 00
       f2: 00
       OUTPUT
     end
 
     it 'prints physical memory' do
       type 'M 4 2'
+      type 'A 2 9001'
       type 'P'
       expect(last_command_stopped).to have_output output
     end

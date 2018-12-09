@@ -21,11 +21,17 @@ class CLI < Thor
 
   desc 'P', "Print the memory's contents"
   def P
-    puts @os.nil? ? 'Must allocate memory first!' : @os.memory
+    puts @os.nil? ? 'Must allocate memory first!' : @os.print_memory
   end
 
   desc 'A [ALLOC_SIZE] [PID]', 'Allocate a chunk of memory to a process'
   def A(alloc_size, pid)
+    begin
+      @os.allocate! :alloc_size => alloc_size.to_i, :pid => pid.to_i
+    rescue InsufficientMemoryError => e
+      puts e.message
+    end
+
     puts "#{alloc_size} bytes of memory have been allocated for process #{pid}."
   end
 

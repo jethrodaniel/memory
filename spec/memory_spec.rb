@@ -5,11 +5,11 @@ require 'spec_helper'
 require_relative '../lib/memory'
 
 RSpec.describe 'Memory' do
-  subject(:memory) { Memory.new :mem_size => 32, :frame_size => 4 }
+  subject(:memory) { Memory.new :mem_size => 16, :frame_size => 4 }
 
   describe '.size' do
     it 'returns the physical memory size' do
-      expect(memory.size).to eq(32)
+      expect(memory.size).to eq(16)
     end
   end
 
@@ -21,23 +21,23 @@ RSpec.describe 'Memory' do
 
   describe '.free_frames' do
     it 'returns a list of free frames' do
-      expect(memory.free_frames).to eq((0...8).to_a)
+      expect(memory.free_frames).to eq((0...4).to_a)
     end
   end
 
   describe '.get' do
     it 'retrives an element from physical memory' do
-      element = memory.get :frame => 4, :offset => 3
+      element = memory.get :frame => 3, :offset => 3
       expect(element).to eq(0)
     end
   end
 
   describe '.allocate!' do
     it 'gives up the specified memory' do
-      allocated = memory.allocate! :amount => 16
+      allocated = memory.allocate! :amount => 8
 
-      expect(allocated).to eq((0...4).to_a)
-      expect(memory.free_frames).to eq((4...8).to_a)
+      expect(allocated).to eq((0...2).to_a)
+      expect(memory.free_frames).to eq((2...4).to_a)
     end
 
     it 'raises an error in case of insufficent memory' do
@@ -47,22 +47,18 @@ RSpec.describe 'Memory' do
     end
   end
 
-  describe '.to_s' do
-    let(:output) do
-      <<~OUTPUT.gsub /(.*)\n\z/, '\1'
-      f1: 0000
-      f2: 0000
-      f3: 0000
-      f4: 0000
-      f5: 0000
-      f6: 0000
-      f7: 0000
-      f8: 0000
-      OUTPUT
+  describe '.to_h' do
+    let(:hash) do
+      {
+        0 => [0, 0, 0, 0],
+        1 => [0, 0, 0, 0],
+        2 => [0, 0, 0, 0],
+        3 => [0, 0, 0, 0]
+      }
     end
 
-    it 'prints the contents of physical memory' do
-      expect(memory.to_s).to eq(output)
+    it 'returns a frame to values hash' do
+      expect(memory.to_h).to eq(hash)
     end
   end
 end
