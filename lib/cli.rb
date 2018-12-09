@@ -43,14 +43,24 @@ class CLI < Thor
     puts "pass bytes of memory have been dellocated from process #{pid}."
   end
 
+  # @note The page and offset are 1-indexed
   desc 'W [PAGE] [OFFSET] [PID]', "Write a `1` to a process's memory location"
   def W(page, offset, pid)
-    @os.write! :page => page.to_i, :offset => offset.to_i, :pid => pid.to_i
+    @os.write! :page => page.to_i - 1,
+               :offset => offset.to_i - 1,
+               :pid => pid.to_i
+  rescue ArgumentError
+    puts 'Illegal memory access!'
   end
 
+  # @note The page and offset are 1-indexed
   desc 'R [PAGE] [OFFSET] [PID]', "Read a byte from a process's memory location"
   def R(page, offset, pid)
-    puts "reading pid:#{pid}, page #{page}, offset #{offset}"
+    puts @os.read :page => page.to_i - 1,
+                  :offset => offset.to_i - 1,
+                  :pid => pid.to_i
+  rescue ArgumentError
+    puts 'Illegal memory access!'
   end
 
   desc 'quit', 'Exit the program'

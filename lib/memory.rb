@@ -41,9 +41,7 @@ class Memory
   #
   # @return [Integer] the contents of memory at the specified location
   def read(frame:, offset:)
-    raise ArgumentError, 'invalid frame' unless (0..num_frames).cover?(frame)
-    raise ArgumentError, 'invalid offset' unless (0..@frame_size).cover?(offset)
-
+    check_location :frame => frame, :offset => offset
     @data[frame * @frame_size + offset]
   end
 
@@ -54,8 +52,7 @@ class Memory
   #
   # @return [Integer] the value that was written, i.e, `1`
   def write!(frame:, offset:)
-    raise ArgumentError, 'invalid frame' unless (0..num_frames).cover?(frame)
-    raise ArgumentError, 'invalid offset' unless (0..@frame_size).cover?(offset)
+    check_location :frame => frame, :offset => offset
 
     @data[frame * @frame_size + offset] = 1
   end
@@ -95,5 +92,16 @@ class Memory
          .each_slice(@frame_size)
          .map.with_index { |e, i| [i, e] }
          .to_h
+  end
+
+  private
+
+  # Ensures the given location is a valid address, raises an exception if not
+  #
+  # @param frame [Integer] the frame to access
+  # @param offset [Integer] the offset from the start of the frame
+  def check_location(frame:, offset:)
+    raise ArgumentError, 'invalid frame' unless (0...num_frames).cover?(frame)
+    raise ArgumentError, 'invalid offset' unless (0...@frame_size).cover?(offset)
   end
 end

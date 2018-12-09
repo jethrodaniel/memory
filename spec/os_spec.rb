@@ -62,8 +62,8 @@ RSpec.describe 'OS' do
 
     let(:output) do
       <<~OUTPUT.gsub /(.*)\n\z/, '\1'
-        f1->p0 (proc9001): 0000
-        f2->p1 (proc9001): 0000
+        f1->p1 (proc9001): 0000
+        f2->p2 (proc9001): 0000
         f3: 0000
         f4: 0000
       OUTPUT

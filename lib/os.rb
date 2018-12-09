@@ -59,16 +59,17 @@ class OS
     @memory.free! :frames => pcb.page_table.values
   end
 
+  # @note The frames and pages are 1-indexed
+  #
   # @return [String] the contents of memory, including processes
   def print_memory
     @memory.to_h.map do |frame, contents|
       pcb = @process_control_blocks.reject { |p| p.page_table.key(frame).nil? }
                                    .first
-
       if pcb.nil?
         "f#{frame + 1}: #{contents.join}"
       else
-        "f#{frame + 1}->p#{pcb.page_table.key(frame)} (proc#{pcb.pid}): " \
+        "f#{frame + 1}->p#{pcb.page_table.key(frame) + 1} (proc#{pcb.pid}): " \
           "#{contents.join}"
       end
     end.join "\n"
@@ -81,7 +82,11 @@ class OS
   # @param pid [Integer] the process's id
   #
   # @return [Integer] the content of memory at the specified location
-  def read(page:, offset:, pid:); end
+  def read(page:, offset:, pid:)
+    return if (pcb = get_pcb :pid => pid).nil?
+
+    @memory.read :frame => pcb.page_table[page], :offset => offset
+  end
 
   # Write a `1` to a process's memory
   #

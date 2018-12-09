@@ -154,7 +154,7 @@ RSpec.describe 'CLI', :type => :aruba do
         2 bytes of memory have been allocated for process 9001.
 
 
-        f1->p0 (proc9001): 00
+        f1->p1 (proc9001): 00
         f2: 00
       OUTPUT
     end
@@ -177,7 +177,7 @@ RSpec.describe 'CLI', :type => :aruba do
       <<~OUTPUT.gsub "Input:\n", "Input: \n"
         Input: M 4 2
         Input: A 2 9001
-        Input: W 0 0 9001
+        Input: W 1 1 9001
         Input: P
         Input:
         4 bytes physical memory (2 frames) have been created.
@@ -188,14 +188,48 @@ RSpec.describe 'CLI', :type => :aruba do
 
 
 
-        f1->p0 (proc9001): 10
+        f1->p1 (proc9001): 10
         f2: 00
       OUTPUT
     end
 
     it 'writes a `1` to a memory location' do
-      type 'W 0 0 9001'
+      type 'W 1 1 9001'
       type 'P'
+      expect(last_command_stopped).to have_output output
+    end
+  end
+
+  describe 'R' do
+    before(:each) do
+      type 'M 4 2'
+      type 'A 2 9001'
+      type 'W 1 1 9001'
+    end
+
+    let(:output) do
+      <<~OUTPUT.gsub "Input:\n", 'Input: '
+        Input: M 4 2
+        Input: A 2 9001
+        Input: W 1 1 9001
+        Input: R 1 1 9001
+        Input:
+
+        4 bytes physical memory (2 frames) have been created.
+
+
+        2 bytes of memory have been allocated for process 9001.
+
+
+
+
+        1
+      OUTPUT
+    end
+
+    it "reads froma process's memory" do
+      type 'R 1 1 9001'
+
       expect(last_command_stopped).to have_output output
     end
   end
