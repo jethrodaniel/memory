@@ -4,6 +4,7 @@ require 'thor'
 
 require_relative 'os'
 
+# Thor command class for the cli
 class CLI < Thor
   # Don't show app name in command help, i.e, instead of
   # `app command desc`, use `command desc`
@@ -28,8 +29,9 @@ class CLI < Thor
   def A(alloc_size, pid)
     begin
       @os.allocate! :alloc_size => alloc_size.to_i, :pid => pid.to_i
-    rescue InsufficientMemoryError => e
-      puts e.message
+    rescue InsufficientMemoryError
+      puts 'Not enough memory!'
+      return
     end
 
     puts "#{alloc_size} bytes of memory have been allocated for process #{pid}."

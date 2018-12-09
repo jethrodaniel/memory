@@ -101,21 +101,61 @@ RSpec.describe 'CLI', :type => :aruba do
     end
   end
 
+  describe 'A' do
+    before(:each) { type 'M 4 2' }
+
+    let(:granted) do
+      <<~OUTPUT.gsub "Input:\n", "Input: \n"
+        Input: M 4 2
+        Input: A 3 9001
+        Input:
+        4 bytes physical memory (2 frames) has been created.
+
+
+        3 bytes of memory have been allocated for process 9001.
+      OUTPUT
+    end
+
+    let(:lacking_memory) do
+      <<~OUTPUT.gsub "Input:\n", "Input: \n"
+        Input: M 4 2
+        Input: A 16 9001
+        Input:
+        4 bytes physical memory (2 frames) has been created.
+
+
+        Not enough memory!
+      OUTPUT
+    end
+
+    it 'allocates memory to a process' do
+      type 'A 3 9001'
+      expect(last_command_stopped).to have_output granted
+    end
+
+    context "if the request can't be granted" do
+      it 'issues an error messege' do
+        type 'A 16 9001'
+        expect(last_command_stopped).to have_output lacking_memory
+      end
+    end
+  end
+
   describe 'P' do
     let(:output) do
       <<~OUTPUT.gsub "Input:\n", "Input: \n"
-      Input: M 4 2
-      Input: A 2 9001
-      Input: P
-      Input:
-      4 bytes physical memory (2 frames) has been created.
+        Input: M 4 2
+        Input: A 2 9001
+        Input: P
+        Input:
+        4 bytes physical memory (2 frames) has been created.
 
 
-      2 bytes of memory have been allocated for process 9001.
+        2 bytes of memory have been allocated for process 9001.
 
 
-      f1->p0 (proc9001): 00
-      f2: 00
+        f1->p0 (proc9001): 00
+        f2: 00
       OUTPUT
     end
 

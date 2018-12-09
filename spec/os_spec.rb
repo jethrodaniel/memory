@@ -33,6 +33,8 @@ RSpec.describe 'OS' do
   describe '.deallocate!' do
     it 'deallocates all memory from a process' do
       frames = os.allocate! :alloc_size => 16, :pid => 9001
+      expect(os.process_control_blocks.first.page_table).to eq(frames)
+
       os.deallocate! :pid => 9001
 
       expect(os.process_control_blocks).to eq([])
@@ -56,22 +58,19 @@ RSpec.describe 'OS' do
   end
 
   describe '.print_memory' do
-    # before(:each) { os.allocate! :alloc_size => 16, :pid => 9001 }
+    before(:each) { os.allocate! :alloc_size => 8, :pid => 9001 }
 
     let(:output) do
       <<~OUTPUT.gsub /(.*)\n\z/, '\1'
-      f1->p0 (proc9001): 0000
-      f2->p1 (proc9001): 0000
-      f3: 0000
-      f4: 0000
+        f1->p0 (proc9001): 0000
+        f2->p1 (proc9001): 0000
+        f3: 0000
+        f4: 0000
       OUTPUT
     end
 
     it 'prints the contents of physical memory' do
-      os.allocate! :alloc_size => 8, :pid => 9001
       expect(os.print_memory).to eq(output)
     end
   end
-
-
 end

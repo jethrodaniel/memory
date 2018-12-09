@@ -12,6 +12,5 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.6'  # Debugging
   gem 'rspec', '~> 3.8'       # Testing
   gem 'rubocop', '~> 0.60.0'  # Linting
-  gem "yard", "~> 0.9.16"     # Documentation
+  gem 'yard', '~> 0.9.16'     # Documentation
 end
-

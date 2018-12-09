@@ -4,6 +4,7 @@
 class InsufficientMemoryError < StandardError
 end
 
+# Represents physical memory
 class Memory
   # @return [Integer] the memory size
   attr_reader :size
@@ -24,7 +25,7 @@ class Memory
   def initialize(mem_size:, frame_size:)
     @size = mem_size
     @frame_size = frame_size
-    @data = (0..mem_size - 1).each_with_index.map { |e, i| [i, 0] }.to_h
+    @data = (0..mem_size - 1).each_with_index.map { |_e, i| [i, 0] }.to_h
     @free_frames = (0...@data.keys.each_slice(frame_size).size).to_a
   end
 
@@ -71,7 +72,7 @@ class Memory
     @free_frames.push *frames
   end
 
-  # Converts the physical memory into a hash by frame
+  # Converts memory into a hash by frame
   #
   # @return [Hash] a hash of frame numbers to memory values
   def to_h

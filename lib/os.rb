@@ -28,7 +28,7 @@ class OS
   #
   # @return [Hash] the page table of the process that was allocated memory
   def allocate!(alloc_size:, pid:)
-    pcb = @process_control_blocks.select { |pcb| pcb.pid == pid }.first
+    pcb = @process_control_blocks.select { |p| p.pid == pid }.first
 
     if pcb.nil?
       pcb = ProcessControlBlock.new :pid => pid
@@ -52,7 +52,7 @@ class OS
   #
   # @return [Array] the memory's free frame list
   def deallocate!(pid:)
-    pcb = @process_control_blocks.select { |pcb| pcb.pid == pid }.first
+    pcb = @process_control_blocks.select { |p| p.pid == pid }.first
 
     @process_control_blocks.delete pcb
 
@@ -61,10 +61,9 @@ class OS
 
   # @return [String] the contents of memory, including processes
   def print_memory
-
     @memory.to_h.map do |frame, contents|
-      pcb = @process_control_blocks.reject do |pcb|
-        pcb.page_table.key(frame).nil?
+      pcb = @process_control_blocks.reject do |p|
+        p.page_table.key(frame).nil?
       end.first
 
       page = pcb.nil? ? nil : pcb.page_table.key(frame)
