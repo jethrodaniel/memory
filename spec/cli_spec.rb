@@ -92,7 +92,7 @@ RSpec.describe 'CLI', :type => :aruba do
   describe 'M' do
     let(:output) do
       "Input: M 32 4\nInput: \n32 bytes physical memory " \
-      "(8 frames) has been created.\n"
+      "(8 frames) have been created.\n"
     end
 
     it 'allocates memory' do
@@ -109,7 +109,7 @@ RSpec.describe 'CLI', :type => :aruba do
         Input: M 4 2
         Input: A 3 9001
         Input:
-        4 bytes physical memory (2 frames) has been created.
+        4 bytes physical memory (2 frames) have been created.
 
 
         3 bytes of memory have been allocated for process 9001.
@@ -121,7 +121,7 @@ RSpec.describe 'CLI', :type => :aruba do
         Input: M 4 2
         Input: A 16 9001
         Input:
-        4 bytes physical memory (2 frames) has been created.
+        4 bytes physical memory (2 frames) have been created.
 
 
         Not enough memory!
@@ -148,7 +148,7 @@ RSpec.describe 'CLI', :type => :aruba do
         Input: A 2 9001
         Input: P
         Input:
-        4 bytes physical memory (2 frames) has been created.
+        4 bytes physical memory (2 frames) have been created.
 
 
         2 bytes of memory have been allocated for process 9001.

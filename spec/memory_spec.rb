@@ -47,6 +47,17 @@ RSpec.describe 'Memory' do
     end
   end
 
+  describe '.free!' do
+    before(:each) do
+      memory.allocate! :amount => 8
+      memory.free! :frames => [0, 1]
+    end
+
+    it 'adds the frames from the free frame list' do
+      expect(memory.free_frames).to contain_exactly(*(0...4).to_a)
+    end
+  end
+
   describe '.to_h' do
     let(:hash) do
       {

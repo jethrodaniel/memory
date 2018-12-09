@@ -73,4 +73,26 @@ RSpec.describe 'OS' do
       expect(os.print_memory).to eq(output)
     end
   end
+
+  describe '.write!' do
+    before(:each) { os.write! :page => 0, :offset => 0, :pid => 9001 }
+
+    it 'writes a `1`to a memory location of a process' do
+    end
+  end
+
+  describe '.get_pcb' do
+    before(:each) { os.allocate! :alloc_size => 8, :pid => 9001 }
+
+    let(:pcb) do
+      ProcessControlBlock.new(:pid => 9001).tap do |pcb|
+        pcb.page_table[0] = 0
+        pcb.page_table[1] = 1
+      end
+    end
+
+    it 'returns the specified process control block' do
+      expect(os.send(:get_pcb, :pid => 9001).page_table).to eq(pcb.page_table)
+    end
+  end
 end

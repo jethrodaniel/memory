@@ -63,13 +63,15 @@ class Memory
     @free_frames.shift frames_needed
   end
 
-  # Frees the given frames
+  # Frees the given frames, i.e add them back to the free frame list
   #
   # @param frames [Array] the frames to deallocate
   #
-  # @return [Array] the free frame list
+  # @return [Integer] the number of bytes that were freed
   def free!(frames:)
     @free_frames.push *frames
+
+    to_h.select { |frame, _content| frames.include? frame }.values.flatten.size
   end
 
   # Converts memory into a hash by frame

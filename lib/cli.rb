@@ -17,7 +17,7 @@ class CLI < Thor
     @os = OS.new :mem_size => mem_size.to_i, :frame_size => frame_size.to_i
 
     puts "#{@os.memory.size} bytes physical memory " \
-         "(#{@os.memory.num_frames} frames) has been created."
+         "(#{@os.memory.num_frames} frames) have been created."
   end
 
   desc 'P', "Print the memory's contents"
@@ -39,6 +39,7 @@ class CLI < Thor
 
   desc 'D [PID]', 'Deallocate memory from a process'
   def D(pid)
+    @os.deallocate! :pid => pid.to_i
     puts "pass bytes of memory have been dellocated from process #{pid}."
   end
 

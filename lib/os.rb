@@ -75,4 +75,32 @@ class OS
       end
     end.join "\n"
   end
+
+  # Read a byte from a process's memory
+  #
+  # @param page [Integer] the page number
+  # @param offset [Integer] the offset from the start of the page
+  # @param pid [Integer] the process's id
+  #
+  # @return [Integer] the content of memory at the specified location
+  def read(page:, offset:, pid:); end
+
+  # Write a `1` to a process's memory
+  #
+  # @param page [Integer] the page number
+  # @param offset [Integer] the offset from the start of the page
+  # @param pid [Integer] the process's id
+  #
+  # @return [Integer] the value that was written to memory, `1`
+  def write!(page:, offset:, pid:)
+  end
+
+  private
+
+  # @param pid [Integer] the process control block to retrieve
+  #
+  # @return [ProcessControlBlock] the specified process control block, else nil
+  def get_pcb(pid:)
+    @process_control_blocks.select { |pcb| pcb.pid == pid }.first
+  end
 end
