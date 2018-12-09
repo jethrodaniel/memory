@@ -14,8 +14,4 @@ class ProcessControlBlock
     @pid = pid
     @page_table = {}
   end
-
-  def ==(pcb)
-    page_table.sort == pcb.page_table.sort
-  end
 end

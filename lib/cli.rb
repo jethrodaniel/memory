@@ -45,7 +45,7 @@ class CLI < Thor
 
   desc 'W [PAGE] [OFFSET] [PID]', "Write a `1` to a process's memory location"
   def W(page, offset, pid)
-    puts "writing `1` to pid:#{pid}, page #{page}, offset #{offset}"
+    @os.write! :page => page.to_i, :offset => offset.to_i, :pid => pid.to_i
   end
 
   desc 'R [PAGE] [OFFSET] [PID]', "Read a byte from a process's memory location"

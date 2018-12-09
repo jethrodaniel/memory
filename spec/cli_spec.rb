@@ -55,7 +55,7 @@ def format_all_cmds
 end
 
 RSpec.describe 'CLI', :type => :aruba do
-  before(:each) { run 'bin/prog4', :exit_timeout => 0.01 }
+  before(:each) { run 'bin/prog4', :exit_timeout => 0.1 }
 
   describe 'quit' do
     it 'quits the program' do
@@ -162,6 +162,39 @@ RSpec.describe 'CLI', :type => :aruba do
     it 'prints physical memory' do
       type 'M 4 2'
       type 'A 2 9001'
+      type 'P'
+      expect(last_command_stopped).to have_output output
+    end
+  end
+
+  describe 'W' do
+    before(:each) do
+      type 'M 4 2'
+      type 'A 2 9001'
+    end
+
+    let(:output) do
+      <<~OUTPUT.gsub "Input:\n", "Input: \n"
+        Input: M 4 2
+        Input: A 2 9001
+        Input: W 0 0 9001
+        Input: P
+        Input:
+        4 bytes physical memory (2 frames) have been created.
+
+
+        2 bytes of memory have been allocated for process 9001.
+
+
+
+
+        f1->p0 (proc9001): 10
+        f2: 00
+      OUTPUT
+    end
+
+    it 'writes a `1` to a memory location' do
+      type 'W 0 0 9001'
       type 'P'
       expect(last_command_stopped).to have_output output
     end

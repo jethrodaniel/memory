@@ -62,16 +62,14 @@ class OS
   # @return [String] the contents of memory, including processes
   def print_memory
     @memory.to_h.map do |frame, contents|
-      pcb = @process_control_blocks.reject do |p|
-        p.page_table.key(frame).nil?
-      end.first
+      pcb = @process_control_blocks.reject { |p| p.page_table.key(frame).nil? }
+                                   .first
 
-      page = pcb.nil? ? nil : pcb.page_table.key(frame)
-
-      if page.nil?
+      if pcb.nil?
         "f#{frame + 1}: #{contents.join}"
       else
-        "f#{frame + 1}->p#{page} (proc#{pcb.pid}): #{contents.join}"
+        "f#{frame + 1}->p#{pcb.page_table.key(frame)} (proc#{pcb.pid}): " \
+          "#{contents.join}"
       end
     end.join "\n"
   end
@@ -93,6 +91,9 @@ class OS
   #
   # @return [Integer] the value that was written to memory, `1`
   def write!(page:, offset:, pid:)
+    return if (pcb = get_pcb :pid => pid).nil?
+
+    @memory.write! :frame => pcb.page_table[page], :offset => offset
   end
 
   private

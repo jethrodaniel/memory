@@ -40,11 +40,24 @@ class Memory
   # @param offset [Integer] the offset from the start of the frame
   #
   # @return [Integer] the contents of memory at the specified location
-  def get(frame:, offset:)
+  def read(frame:, offset:)
     raise ArgumentError, 'invalid frame' unless (0..num_frames).cover?(frame)
     raise ArgumentError, 'invalid offset' unless (0..@frame_size).cover?(offset)
 
     @data[frame * @frame_size + offset]
+  end
+
+  # Write a `1` to memory
+  #
+  # @param frame [Integer] the frame to access
+  # @param offset [Integer] the offset from the start of the frame
+  #
+  # @return [Integer] the value that was written, i.e, `1`
+  def write!(frame:, offset:)
+    raise ArgumentError, 'invalid frame' unless (0..num_frames).cover?(frame)
+    raise ArgumentError, 'invalid offset' unless (0..@frame_size).cover?(offset)
+
+    @data[frame * @frame_size + offset] = 1
   end
 
   # Give up frames to allocate the requested amount of memory

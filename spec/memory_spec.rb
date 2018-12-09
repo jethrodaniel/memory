@@ -25,10 +25,23 @@ RSpec.describe 'Memory' do
     end
   end
 
-  describe '.get' do
+  describe '.read' do
     it 'retrives an element from physical memory' do
-      element = memory.get :frame => 3, :offset => 3
+      element = memory.read :frame => 3, :offset => 3
       expect(element).to eq(0)
+    end
+  end
+
+  describe '.write!' do
+    let!(:written) { memory.write! :frame => 3, :offset => 3 }
+
+    it 'writes a `1` to memory' do
+      element = memory.read :frame => 3, :offset => 3
+      expect(element).to eq(1)
+    end
+
+    it 'returns `1`' do
+      expect(written).to eq(1)
     end
   end
 

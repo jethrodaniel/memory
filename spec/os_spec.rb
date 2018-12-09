@@ -75,9 +75,15 @@ RSpec.describe 'OS' do
   end
 
   describe '.write!' do
-    before(:each) { os.write! :page => 0, :offset => 0, :pid => 9001 }
+    before(:each) do
+      os.allocate! :alloc_size => 8, :pid => 9001
+      os.write! :page => 0, :offset => 0, :pid => 9001
+    end
+
+    let(:pcb) { os.get_pcb :pid => 9001 }
 
     it 'writes a `1`to a memory location of a process' do
+      expect(os.memory.read(:frame => 0, :offset => 0)).to eq(1)
     end
   end
 
