@@ -42,7 +42,7 @@ RSpec.describe 'OS' do
   end
 
   describe '.process_control_blocks' do
-    it 'returns the process_control_blocks' do
+    it 'returns the sum of allocated memory' do
       page_table_one = os.allocate! :alloc_size => 8, :pid => 9001
       page_table_two = os.allocate! :alloc_size => 8, :pid => 42
 

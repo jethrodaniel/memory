@@ -28,19 +28,26 @@ class CLI < Thor
   desc 'A [ALLOC_SIZE] [PID]', 'Allocate a chunk of memory to a process'
   def A(alloc_size, pid)
     begin
-      @os.allocate! :alloc_size => alloc_size.to_i, :pid => pid.to_i
+      pages = @os.allocate! :alloc_size => alloc_size.to_i, :pid => pid.to_i
+      mem_size = pages.values.size * @os.memory.frame_size
     rescue InsufficientMemoryError
       puts 'Not enough memory!'
       return
     end
 
-    puts "#{alloc_size} bytes of memory have been allocated for process #{pid}."
+    puts "#{mem_size} bytes of memory have been allocated for process #{pid}."
   end
 
   desc 'D [PID]', 'Deallocate memory from a process'
   def D(pid)
-    @os.deallocate! :pid => pid.to_i
-    puts "pass bytes of memory have been dellocated from process #{pid}."
+    begin
+      freed = @os.deallocate! :pid => pid.to_i
+    rescue NonExistentProcessError
+      puts "A process with that pid doesn't exist!"
+      return
+    end
+
+    puts "#{freed} bytes of memory have been dellocated from process #{pid}."
   end
 
   # @note The page and offset are 1-indexed

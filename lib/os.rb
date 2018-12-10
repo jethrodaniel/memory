@@ -3,6 +3,10 @@
 require_relative 'memory'
 require_relative 'process_control_block'
 
+# An error to be raised in case a non-existent process is requested
+class NonExistentProcessError < StandardError
+end
+
 # Represents an operating system
 class OS
   # @return [Array] the process control blocks for each process
@@ -26,7 +30,7 @@ class OS
   # @param alloc_size [Integer] the amount of memory to allocate
   # @param pid [Integer] the pid of the process to allocate memory to
   #
-  # @return [Hash] the page table of the process that was allocated memory
+  # @return [Integer] the size of the process's total allocated memory
   def allocate!(alloc_size:, pid:)
     pcb = @process_control_blocks.select { |p| p.pid == pid }.first
 
@@ -53,6 +57,11 @@ class OS
   # @return [Array] the memory's free frame list
   def deallocate!(pid:)
     pcb = @process_control_blocks.select { |p| p.pid == pid }.first
+
+    if pcb.nil?
+      raise NonExistentProcessError, "That process doesn't exist!"
+      return
+    end
 
     @process_control_blocks.delete pcb
 

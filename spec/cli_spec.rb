@@ -112,7 +112,7 @@ RSpec.describe 'CLI', :type => :aruba do
         4 bytes physical memory (2 frames) have been created.
 
 
-        3 bytes of memory have been allocated for process 9001.
+        4 bytes of memory have been allocated for process 9001.
       OUTPUT
     end
 
@@ -137,6 +137,57 @@ RSpec.describe 'CLI', :type => :aruba do
       it 'issues an error messege' do
         type 'A 16 9001'
         expect(last_command_stopped).to have_output lacking_memory
+      end
+    end
+  end
+
+  describe 'D' do
+    before(:each) do
+      type 'M 4 2'
+      type 'A 2 9001'
+    end
+
+    let(:deleted) do
+      <<~OUTPUT.gsub "Input:\n", "Input: \n"
+        Input: M 4 2
+        Input: A 2 9001
+        Input: D 9001
+        Input:
+        4 bytes physical memory (2 frames) have been created.
+
+
+        2 bytes of memory have been allocated for process 9001.
+
+
+        2 bytes of memory have been dellocated from process 9001.
+      OUTPUT
+    end
+
+    let(:no_pid) do
+      <<~OUTPUT.gsub "Input:\n", "Input: \n"
+        Input: M 4 2
+        Input: A 2 9001
+        Input: D 16
+        Input:
+        4 bytes physical memory (2 frames) have been created.
+
+
+        2 bytes of memory have been allocated for process 9001.
+
+
+        A process with that pid doesn't exist!
+      OUTPUT
+    end
+
+    it 'deallocates memory frame a process' do
+      type 'D 9001'
+      expect(last_command_stopped).to have_output deleted
+    end
+
+    context "if the process doesn't exist" do
+      it 'issues an error messege' do
+        type 'D 16'
+        expect(last_command_stopped).to have_output no_pid
       end
     end
   end
